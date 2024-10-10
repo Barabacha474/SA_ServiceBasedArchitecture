@@ -4,7 +4,7 @@ from datetime import datetime
 
 
 class FeedService:
-    def __init__(self, feed_db_path="feed.json", orchestrator_queue = None):
+    def __init__(self, feed_db_path="UserService/feed.json", orchestrator_queue = None):
         self.orchestrator_queue = orchestrator_queue
         self.feed_db_path = feed_db_path
         try:

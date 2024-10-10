@@ -1,9 +1,9 @@
 import queue
 import threading
 import time
-from UserService import UserService
-from FeedService import FeedService
-from ConnectionService import ConnectionService
+from UserService.UserService import UserService
+from FeedService.FeedService import FeedService
+from ConnectionService.ConnectionService import ConnectionService
 
 
 class Orchestrator:
@@ -44,7 +44,7 @@ class Orchestrator:
                               /reg: <NAME> - Register a new user\n\
                               /logout - Logout\n\
                               /send: <MSG> - Send a message\n\
-                              /like: <NAME> <TIMESTAMP> - Like a message")
+                              /like: <NAME> <Y-M-D_H-M-S> - Like a message")
         elif command.startswith("/login:"):
             username = command.split(":")[1].strip()
             success, message = self.user_service.login_user(username)
@@ -58,7 +58,6 @@ class Orchestrator:
             success, message = self.user_service.register_user(username)
             if success:
                 self.send_message(client_address, message)
-                self.send_message(client_address, "[*] Please login now.")
             else:
                 self.send_message(client_address, message)
         elif command == "/logout":

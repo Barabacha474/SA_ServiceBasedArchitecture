@@ -10,7 +10,7 @@ def receive_data(s):
             data = s.recv(1024).decode("utf-8")
             print(data)
         except ConnectionResetError:
-            print("Connection lost. Exiting.")
+            print("[!] Connection lost. Exiting.")
             break
 
 def send_commands(s):
