@@ -36,7 +36,7 @@ class ConnectionService:
         self.send_message(client_socket, "Welcome to Twitter-like chat!")
         while True:
             try:
-                data = client_socket.recv(1024).decode("utf-8").strip()
+                data = client_socket.recv(407).decode("utf-8").strip() #'/send '+ 400 symbols
 
                 if data == "/exit":
                     with lock:
