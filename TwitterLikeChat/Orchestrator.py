@@ -1,24 +1,30 @@
 import queue
+import threading
 import time
 from UserService import UserService
 from FeedService import FeedService
 from ConnectionService import ConnectionService
 
+
 class Orchestrator:
     def __init__(self):
         self.user_service = UserService()
         self.feed_service = FeedService()
-        self.connection_service = ConnectionService(orchestrator_queue=queue.Queue())
         self.command_queue = queue.Queue()
+        self.connection_service = ConnectionService(orchestrator_queue=self.command_queue)
         self.feed_updated = False
 
     def start(self):
         print("[*] Orchestrator started.")
-        self.connection_service.start()
+        connection_service_thread = threading.Thread(target=self.connection_service.start, args=())
+        connection_service_thread.start()
         self.process_commands()
 
     def process_commands(self):
+        print("[*] Processing commands started.")
+        print(self.command_queue.unfinished_tasks)
         while True:
+
             try:
                 client_address, command = self.command_queue.get(block=False)
                 self.handle_command(client_address, command)
@@ -29,6 +35,7 @@ class Orchestrator:
                 time.sleep(0.1)
 
     def handle_command(self, client_address, command):
+        print(f"[+] Received {command} from {client_address}")
         if command == "/help":
             self.send_message(client_address, "/help - Show this help message")
             self.send_message(client_address, "/login: <NAME> - Login with username")
@@ -100,11 +107,13 @@ class Orchestrator:
                 self.send_message(client_address, msg)
 
     def send_message(self, client_address, message):
-        self.connection_service.send_message(self.connection_service.connections[client_address], message)
+        socket = self.connection_service.getSocketByAddress(client_address)
+        self.connection_service.send_message(socket, message)
 
     def stop(self):
         self.connection_service.stop()
         print("Orchestrator stopped.")
+
 
 if __name__ == "__main__":
     orchestrator = Orchestrator()
