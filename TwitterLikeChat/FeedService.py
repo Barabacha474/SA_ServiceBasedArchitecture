@@ -22,7 +22,7 @@ class FeedService:
 
     def add_message(self, username, message, timestamp=None):
         if timestamp is None:
-            timestamp = datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
+            timestamp = datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d_%H-%M-%S')
         new_message = {
             "message": message,
             "username": username,
