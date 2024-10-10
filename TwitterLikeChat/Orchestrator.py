@@ -56,7 +56,7 @@ class Orchestrator:
             if self.connection_service.is_registered(client_address):
 
                 username = self.connection_service.get_registered_username(client_address)
-                
+
                 success, message = self.user_service.logout_user(username)
                 self.connection_service.set_registered_status(client_address, False)
                 self.send_message(client_address, message)
@@ -94,9 +94,10 @@ class Orchestrator:
         for client_address in self.connection_service.connections:
             self.send_message(client_address, "[*] Feed Update")
             for message in feed:
-                self.send_message(client_address, f"[*] {message['username']}, {message['timestamp']} : {message['message']}")
-                self.send_message(client_address, f"[*] Liked by: {', '.join(message['likes'])}")
-                self.send_message(client_address, "-------------------------------------------------------------------------")
+                msg = f"[*] {message['username']}, {message['timestamp']} : {message['message']}"
+                msg += f"\n[*] Liked by: {', '.join(message['likes'])}"
+                msg += "\n-------------------------------------------------------------------------"
+                self.send_message(client_address, msg)
 
     def send_message(self, client_address, message):
         self.connection_service.send_message(self.connection_service.connections[client_address], message)
