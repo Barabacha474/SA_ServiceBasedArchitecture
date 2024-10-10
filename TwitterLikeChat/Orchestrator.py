@@ -1,8 +1,8 @@
 import queue
 import time
-import UserService
-import FeedService
-import ConnectionService
+from UserService import UserService
+from FeedService import FeedService
+from ConnectionService import ConnectionService
 
 class Orchestrator:
     def __init__(self):
