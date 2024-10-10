@@ -37,12 +37,12 @@ class Orchestrator:
     def handle_command(self, client_address, command):
         print(f"[+] Received {command} from {client_address}")
         if command == "/help":
-            self.send_message(client_address, "/help - Show this help message")
-            self.send_message(client_address, "/login: <NAME> - Login with username")
-            self.send_message(client_address, "/reg: <NAME> - Register a new user")
-            self.send_message(client_address, "/logout - Logout")
-            self.send_message(client_address, "/send: <MSG> - Send a message")
-            self.send_message(client_address, "/like: <NAME> <TIMESTAMP> - Like a message")
+            self.send_message(client_address, "/help - Show this help message\n")
+            self.send_message(client_address, "/login: <NAME> - Login with username\n")
+            self.send_message(client_address, "/reg: <NAME> - Register a new user\n")
+            self.send_message(client_address, "/logout - Logout\n")
+            self.send_message(client_address, "/send: <MSG> - Send a message\n")
+            self.send_message(client_address, "/like: <NAME> <TIMESTAMP> - Like a message\n")
         elif command.startswith("/login:"):
             username = command.split(":")[1].strip()
             success, message = self.user_service.login_user(username)
