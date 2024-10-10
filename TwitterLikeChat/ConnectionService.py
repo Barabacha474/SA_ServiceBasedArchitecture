@@ -27,7 +27,7 @@ class ConnectionService:
             connection_thread.start()
 
     def handle_client(self, client_socket, client_address):
-        self.connections[client_address] = {"registered": False}
+        self.connections[client_address] = {"registered": False, "username": None}
         self.send_message(client_socket, "Welcome to Twitter-like chat!")
         self.send_message(client_socket, "Please enter your username:")
         while True:
@@ -52,14 +52,21 @@ class ConnectionService:
             self.orchestrator_queue.put((client_address, "/logout"))
         print(f"Disconnected from {client_address}")
 
-    def set_registered_status(self, client_address, status):
+    def set_registered_status(self, client_address, status, username = None):
         if client_address in self.connections:
             self.connections[client_address]["registered"] = status
+            self.connections[client_address]["username"] = username
 
     def is_registered(self, client_address):
         if client_address in self.connections:
             return self.connections[client_address]["registered"]
         return False
+
+    def get_username(self, client_address):
+        if self.is_registered(client_address):
+            return self.connections[client_address]["username"]
+        else:
+            return None
 
     def stop(self):
         self.running = False
