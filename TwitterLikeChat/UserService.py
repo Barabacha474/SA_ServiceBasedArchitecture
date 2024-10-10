@@ -6,6 +6,10 @@ class UserService:
         try:
             with open(self.users_db_path, "r") as f:
                 self.users = json.load(f)
+
+                for username in self.users:
+                    self.users[username]["online"] = False
+
         except FileNotFoundError:
             self.users = {}
 

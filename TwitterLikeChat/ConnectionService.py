@@ -41,7 +41,6 @@ class ConnectionService:
                 if data == "/exit":
                     with lock:
                         self.disconnect_client(client_socket, client_address)
-                        self.orchestrator_queue.put((client_address, "/logout"))
                     break
                 with lock:
                     self.orchestrator_queue.put((client_address, data))

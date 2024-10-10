@@ -57,7 +57,7 @@ class Orchestrator:
             success, message = self.user_service.register_user(username)
             if success:
                 self.send_message(client_address, message)
-                self.send_message(client_address, "Please login now.")
+                self.send_message(client_address, "[*] Please login now.")
             else:
                 self.send_message(client_address, message)
         elif command == "/logout":
@@ -67,18 +67,17 @@ class Orchestrator:
 
                 success, message = self.user_service.logout_user(username)
                 self.connection_service.set_registered_status(client_address, False)
-                self.send_message(client_address, message)
             else:
-                self.send_message(client_address, "You are not logged in.")
+                self.send_message(client_address, "[!] You are not logged in.")
         elif command.startswith("/send:"):
             if self.connection_service.is_registered(client_address):
                 message = command.split(":")[1].strip()
 
-                username = self.connection_service.get_registered_username(client_address)
+                username = self.connection_service.get_username(client_address)
 
                 self.feed_service.add_message(username, message)
             else:
-                self.send_message(client_address, "Please register or log in.")
+                self.send_message(client_address, "[*] Please register or log in.")
         elif command.startswith("/like:"):
             if self.connection_service.is_registered(client_address):
                 parts = command.split(":")[1].strip().split(" ")
@@ -113,7 +112,7 @@ class Orchestrator:
 
     def stop(self):
         self.connection_service.stop()
-        print("Orchestrator stopped.")
+        print("[*] Orchestrator stopped.")
 
 
 if __name__ == "__main__":
