@@ -1,7 +1,8 @@
 import json
 
 class UserService:
-    def __init__(self, users_db_path="users.json"):
+    def __init__(self, users_db_path="users.json", orchestrator_queue = None):
+        self.orchestrator_queue = orchestrator_queue
         self.users_db_path = users_db_path
         try:
             with open(self.users_db_path, "r") as f:

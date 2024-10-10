@@ -8,9 +8,9 @@ from ConnectionService import ConnectionService
 
 class Orchestrator:
     def __init__(self):
-        self.user_service = UserService()
-        self.feed_service = FeedService()
         self.command_queue = queue.Queue()
+        self.user_service = UserService(orchestrator_queue=self.command_queue)
+        self.feed_service = FeedService(orchestrator_queue=self.command_queue)
         self.connection_service = ConnectionService(orchestrator_queue=self.command_queue)
         self.feed_updated = False
 
@@ -30,6 +30,7 @@ class Orchestrator:
                 self.handle_command(client_address, command)
             except queue.Empty:
                 if self.feed_updated:
+                    print("[*] Feed updated")
                     self.send_feed_update()
                     self.feed_updated = False
                 time.sleep(0.1)
@@ -67,6 +68,7 @@ class Orchestrator:
 
                 success, message = self.user_service.logout_user(username)
                 self.connection_service.set_registered_status(client_address, False)
+                self.send_message(client_address, message)
             else:
                 self.send_message(client_address, "[!] You are not logged in.")
         elif command.startswith("/send:"):
@@ -84,7 +86,6 @@ class Orchestrator:
                 if len(parts) == 2:
                     username, timestamp = parts
                     try:
-                        timestamp = float(timestamp)
                         success, message = self.feed_service.like_message(username, timestamp)
                         self.send_message(client_address, message)
                     except ValueError:
@@ -93,6 +94,8 @@ class Orchestrator:
                     self.send_message(client_address, "[!] Invalid command format.")
             else:
                 self.send_message(client_address, "[!] Please register or log in.")
+        elif command.startswith("/feed update"):
+            self.send_feed_update()
         else:
             self.send_message(client_address, "[!] Invalid command. Use /help for available commands.")
 
