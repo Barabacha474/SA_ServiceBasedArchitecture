@@ -33,6 +33,7 @@ class ConnectionService:
         while True:
             try:
                 data = client_socket.recv(1024).decode("utf-8").strip()
+                print(f"[+] Received {data}")
                 if data == "/exit":
                     self.disconnect_client(client_socket, client_address)
                     break
@@ -42,7 +43,8 @@ class ConnectionService:
                 self.disconnect_client(client_socket, client_address)
                 break
 
-    def send_message(self, client_socket, message):
+    @staticmethod
+    def send_message(client_socket, message):
         client_socket.sendall(message.encode("utf-8"))
 
     def disconnect_client(self, client_socket, client_address):
@@ -50,7 +52,7 @@ class ConnectionService:
         if client_address in self.connections:
             del self.connections[client_address]
             self.orchestrator_queue.put((client_address, "/logout"))
-        print(f"Disconnected from {client_address}")
+        print(f"[-] Disconnected from {client_address}")
 
     def set_registered_status(self, client_address, status, username = None):
         if client_address in self.connections:
