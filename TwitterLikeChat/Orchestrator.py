@@ -37,12 +37,13 @@ class Orchestrator:
     def handle_command(self, client_address, command):
         print(f"[+] Received {command} from {client_address}")
         if command == "/help":
-            self.send_message(client_address, "/help - Show this help message\n")
-            self.send_message(client_address, "/login: <NAME> - Login with username\n")
-            self.send_message(client_address, "/reg: <NAME> - Register a new user\n")
-            self.send_message(client_address, "/logout - Logout\n")
-            self.send_message(client_address, "/send: <MSG> - Send a message\n")
-            self.send_message(client_address, "/like: <NAME> <TIMESTAMP> - Like a message\n")
+            self.send_message(client_address,
+                              "/help - Show this help message\n\
+                              /login: <NAME> - Login with username\n\
+                              /reg: <NAME> - Register a new user\n\
+                              /logout - Logout\n\
+                              /send: <MSG> - Send a message\n\
+                              /like: <NAME> <TIMESTAMP> - Like a message")
         elif command.startswith("/login:"):
             username = command.split(":")[1].strip()
             success, message = self.user_service.login_user(username)
@@ -62,7 +63,7 @@ class Orchestrator:
         elif command == "/logout":
             if self.connection_service.is_registered(client_address):
 
-                username = self.connection_service.get_registered_username(client_address)
+                username = self.connection_service.get_username(client_address)
 
                 success, message = self.user_service.logout_user(username)
                 self.connection_service.set_registered_status(client_address, False)

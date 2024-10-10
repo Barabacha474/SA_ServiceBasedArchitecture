@@ -34,7 +34,6 @@ class ConnectionService:
     def handle_client(self, client_socket, client_address):
         self.connections[client_address] = {"registered": False, "username": None, "socket": client_socket}
         self.send_message(client_socket, "Welcome to Twitter-like chat!")
-        self.send_message(client_socket, "Please enter your username:")
         while True:
             try:
                 data = client_socket.recv(1024).decode("utf-8").strip()
